@@ -215,7 +215,7 @@ public class MainFragment extends BaseFragment{
                                 NetDEVSDK.NETDEV_Android_SetExceptionCallBack(pfExceptionCallBack, 0);
                             }
                         }).start();
-                        Log.i("wbtest", "startActivity");
+
                         if (!cloudDevNameList.contains(stCloudDevInfo.szDeviceName)){
                             cloudLpUserIDList.add(NetDEVSDK.lpUserID);
                             cloudDevNameList.add(stCloudDevInfo.szDeviceName);

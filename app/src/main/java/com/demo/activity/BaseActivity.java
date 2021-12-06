@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -24,13 +25,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showFragment(Fragment fragment, boolean isBack){
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.frame_content, fragment);
         if (isBack) {
-            fm.beginTransaction().replace(R.id.frame_content, fragment).addToBackStack(fragment.toString())
-                    .commit();
-        } else{
-            fm.beginTransaction().replace(R.id.frame_content, fragment)
-                    .commit();
+            ft.addToBackStack(fragment.toString());
         }
+        ft.commit();
     }
 }

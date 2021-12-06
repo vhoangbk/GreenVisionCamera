@@ -52,70 +52,70 @@ public class LoginFragment extends BaseFragment {
         });
     }
 
-    class LoginHanlde extends AsyncTask<Void,Void,Void>{
-
-        private ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = new ProgressDialog(getActivity());
-            dialog.setMessage("Logging, please wait.");
-            dialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String strCloudUserName = etName.getText().toString();
-            String strCloudPassword = etPasword.getText().toString();
-            String strCloudServerUrl = etServerUrl.getText().toString();
-            int  iNoAccountFlag = 0;
-            if ((0 == strCloudUserName.length()) && (0 == strCloudPassword.length()))
-            {
-                iNoAccountFlag = 1;
-            }
-            NetDEVSDK.glpcloudID = NetDEVSDK.NETDEV_LoginCloudEx(strCloudServerUrl, strCloudUserName, strCloudPassword, iNoAccountFlag);
-            if(0 != NetDEVSDK.glpcloudID)
-            {
-                /* Client info as demo. Must be filled by real data while actual development */
-                NetDEVSDK.NETDEV_SetClientID("1234567890987654321");          /* ClienID must be Unique! */
-                NETDEV_CLOUD_MOBILE_INFO_S stMobileInfo = new NETDEV_CLOUD_MOBILE_INFO_S();
-                NETDEV_CLOUD_LIMIT_INFO_S stLimitInfo = new NETDEV_CLOUD_LIMIT_INFO_S();
-                stMobileInfo.szMobileModule = "A2017";
-                stMobileInfo.szSystemType = "Andriod";
-                stMobileInfo.szSystemVersion = "7.0.0.1";
-                stMobileInfo.bDonotDisturb = 1;
-                stMobileInfo.bPushBuiltFlag = 0;
-                stMobileInfo.szAppName = "SdkDemo";
-                stMobileInfo.szAppLanguage = "zh-cn";
-                stMobileInfo.szAppVersion = "V0.0.0.1";
-                stMobileInfo.bIosEnvir = 1;
-                stLimitInfo.udwMaxAppTimeS = 0;
-                stLimitInfo.udwMaxDeviceNum = 0;
-                stLimitInfo.udwMaxRTSNum = 0;
-                int iRet = NetDEVSDK.NETDEV_ReportMobileInfo(NetDEVSDK.glpcloudID, stMobileInfo, stLimitInfo);
-                if(0 == iRet)
-                {
-                    Utils.showAlert(getActivity(),"Fail", "Report Mobile Info Fail.");
-                }
-                showFragment(new MainFragment());
-            }else {
-                Utils.showAlert(getActivity(),"Fail", "Login failed, please check if the input is correct.");
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            super.onPostExecute(unused);
-
-            dialog.dismiss();
-        }
-    }
+//    class LoginHanlde extends AsyncTask<Void,Void,Void>{
+//
+//        private ProgressDialog dialog;
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            dialog = new ProgressDialog(getActivity());
+//            dialog.setMessage("Logging, please wait.");
+//            dialog.show();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            String strCloudUserName = etName.getText().toString();
+//            String strCloudPassword = etPasword.getText().toString();
+//            String strCloudServerUrl = etServerUrl.getText().toString();
+//            int  iNoAccountFlag = 0;
+//            if ((0 == strCloudUserName.length()) && (0 == strCloudPassword.length()))
+//            {
+//                iNoAccountFlag = 1;
+//            }
+//            NetDEVSDK.glpcloudID = NetDEVSDK.NETDEV_LoginCloudEx(strCloudServerUrl, strCloudUserName, strCloudPassword, iNoAccountFlag);
+//            if(0 != NetDEVSDK.glpcloudID)
+//            {
+//                /* Client info as demo. Must be filled by real data while actual development */
+//                NetDEVSDK.NETDEV_SetClientID("1234567890987654321");          /* ClienID must be Unique! */
+//                NETDEV_CLOUD_MOBILE_INFO_S stMobileInfo = new NETDEV_CLOUD_MOBILE_INFO_S();
+//                NETDEV_CLOUD_LIMIT_INFO_S stLimitInfo = new NETDEV_CLOUD_LIMIT_INFO_S();
+//                stMobileInfo.szMobileModule = "A2017";
+//                stMobileInfo.szSystemType = "Andriod";
+//                stMobileInfo.szSystemVersion = "7.0.0.1";
+//                stMobileInfo.bDonotDisturb = 1;
+//                stMobileInfo.bPushBuiltFlag = 0;
+//                stMobileInfo.szAppName = "SdkDemo";
+//                stMobileInfo.szAppLanguage = "zh-cn";
+//                stMobileInfo.szAppVersion = "V0.0.0.1";
+//                stMobileInfo.bIosEnvir = 1;
+//                stLimitInfo.udwMaxAppTimeS = 0;
+//                stLimitInfo.udwMaxDeviceNum = 0;
+//                stLimitInfo.udwMaxRTSNum = 0;
+//                int iRet = NetDEVSDK.NETDEV_ReportMobileInfo(NetDEVSDK.glpcloudID, stMobileInfo, stLimitInfo);
+//                if(0 == iRet)
+//                {
+//                    Utils.showAlert(getActivity(),"Fail", "Report Mobile Info Fail.");
+//                }
+//                showFragment(new MainFragment());
+//            }else {
+//                Utils.showAlert(getActivity(),"Fail", "Login failed, please check if the input is correct.");
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void unused) {
+//            super.onPostExecute(unused);
+//
+//            dialog.dismiss();
+//        }
+//    }
 
     private void cloudLogin(){
 
-        new LoginHanlde().execute();
+//        new LoginHanlde().execute();
 
 
     }

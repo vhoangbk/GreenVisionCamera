@@ -18,6 +18,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        TAG = getClass().getSimpleName();
         mRootView = inflater.inflate(getLayout(), container, false);
         TAG = this.getClass().getName();
         return mRootView;

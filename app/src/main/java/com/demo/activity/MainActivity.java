@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.demo.R;
 import com.demo.fragment.LoginFragment;
+import com.demo.fragment.PhoneFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -12,6 +13,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        showFragment(new LoginFragment());
+        showFragment(new PhoneFragment());
     }
 }
