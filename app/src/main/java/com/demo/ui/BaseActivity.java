@@ -1,4 +1,4 @@
-package com.demo.activity;
+package com.demo.ui;
 
 import android.os.Bundle;
 
@@ -15,7 +15,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
     }
 
     public void showFragment(Fragment fragment){
@@ -31,5 +31,14 @@ public class BaseActivity extends AppCompatActivity {
             ft.addToBackStack(fragment.toString());
         }
         ft.commit();
+    }
+
+    public void showFragmentToTop(Fragment fragment){
+        FragmentManager fm = getSupportFragmentManager();
+        while (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStackImmediate();
+        }
+        fm.beginTransaction().replace(R.id.frame_content, fragment)
+                .commit();
     }
 }

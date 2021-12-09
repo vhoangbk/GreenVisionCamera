@@ -1,55 +1,37 @@
-package com.demo.fragment;
+package com.demo.ui.liveview;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
+import android.app.Activity;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.demo.R;
-import com.demo.utils.Utils;
+import com.demo.databinding.FragmentLiveviewBinding;
+import com.demo.ui.BaseActivity;
+import com.demo.ui.BaseFragment;
 import com.demo.view.CPlayView;
-import com.sdk.AlarmMessCallBackV30;
-import com.sdk.ExceptionCallBack_PF;
-import com.sdk.NETDEV_AUDIO_SAMPLE_PARAM_S;
-import com.sdk.NETDEV_CLOUD_DEV_INFO_S;
-import com.sdk.NETDEV_CLOUD_DEV_LOGIN_INFO_S;
-import com.sdk.NETDEV_CLOUD_DEV_LOGIN_S;
-import com.sdk.NETDEV_DECODE_AUDIO_DATA_CALLBACK_PF;
-import com.sdk.NETDEV_DEVICE_INFO_S;
-import com.sdk.NETDEV_DEV_BASIC_INFO_S;
-import com.sdk.NETDEV_DEV_CHN_ENCODE_INFO_S;
-import com.sdk.NETDEV_LOGIN_INFO_S;
 import com.sdk.NETDEV_PREVIEWINFO_S;
 import com.sdk.NETDEV_VIDEO_CHL_DETAIL_INFO_S;
 import com.sdk.NetDEVSDK;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import static com.sdk.NetDEVSDK.gastLoginDeviceInfo;
+public class LiveViewFragment extends Fragment {
 
-public class LiveFragment extends BaseFragment{
-
+    protected View mRootView;
     private Spinner NameSpinner;
     private Spinner m_oChannelList;
     private Button m_oStartLiveViewBtn;
@@ -69,9 +51,16 @@ public class LiveFragment extends BaseFragment{
     public static long lpLiveViewHandle[] = new long[4];     //live video ID
     public static float scaleRatio[] = new float[4];     //live video ID
 
+    private FragmentLiveviewBinding binding;
+    private LiveViewViewModel viewModel;
+
+    @Nullable
     @Override
-    protected int getLayout() {
-        return R.layout.fragment_live;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        viewModel = new ViewModelProvider(getActivity()).get(LiveViewViewModel.class);
+        binding = FragmentLiveviewBinding.inflate(inflater, container, false);
+        mRootView = binding.getRoot();
+        return mRootView;
     }
 
     @Override
@@ -79,12 +68,8 @@ public class LiveFragment extends BaseFragment{
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = getArguments();
-        ArrayList<String> szDevNameList = bundle.getStringArrayList("szDevName");
-        long[] IDList  = bundle.getLongArray("cloudLpUserID");
-        ArrayList<Long> cloudLpUserIDList = new ArrayList<Long>();
-        for (long e : IDList){
-            cloudLpUserIDList.add(e);
-        }
+        strCloudDevName = bundle.getString("szDevName");
+        long userID  = bundle.getLong("cloudLpUserID");
 
         m_oChannelList = (Spinner) mRootView.findViewById(R.id.channelList);
         NameSpinner = (Spinner) mRootView.findViewById(R.id.device_spinner);
@@ -104,36 +89,32 @@ public class LiveFragment extends BaseFragment{
         m_oPlayer2.m_bCanDrawFrame = false;
         m_oPlayer3.m_bCanDrawFrame = false;
         NetDEVSDK.gdwWinIndex = 1;
-        LiveView();/*initial main interface*/
+//        LiveView();/*initial main interface*/
 
         scaleRatio[0] = 1.0f;
         scaleRatio[1] = 1.0f;
         scaleRatio[2] = 1.0f;
         scaleRatio[3] = 1.0f;
 
-        ArrayAdapter<String> m_oNameAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, szDevNameList);
-        NameSpinner.setAdapter(m_oNameAdapter);
+//        ArrayList<String> nameList = new ArrayList<>();
+//        nameList.add(strCloudDevName);
+//        ArrayAdapter<String> m_oNameAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, nameList);
+//        NameSpinner.setAdapter(m_oNameAdapter);
+//
+//        nameLpUserIDMap.put(strCloudDevName, userID);
 
-        if (szDevNameList.size() > 0) {
-            NameSpinner.setSelection(szDevNameList.size() - 1, true);
-        }
-        strCloudDevName = szDevNameList.get(szDevNameList.size() - 1);
-        Long value = cloudLpUserIDList.get(cloudLpUserIDList.size()-1);
-        nameLpUserIDMap.put(strCloudDevName, value);
-
-        if (0 == NetDEVSDK.dwDeviceType)
-        {
-            List<NETDEV_VIDEO_CHL_DETAIL_INFO_S> chlList = new ArrayList<NETDEV_VIDEO_CHL_DETAIL_INFO_S>();
-            chlList = NetDEVSDK.NETDEV_QueryVideoChlDetailList(nameLpUserIDMap.get(strCloudDevName), 64);
-            m_oChnAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, new ArrayList<String>());
-            m_oChannelList.setAdapter(m_oChnAdapter);
-            for (int i = 0; i < (chlList == null ? 0 : chlList.size()); i++) {
-                NETDEV_VIDEO_CHL_DETAIL_INFO_S tmp = chlList.get(i);
-                System.out.println(i + " Status -" + ((tmp.enStatus == 1) ? "Online" : "Offline"));
-                m_oChnAdapter.add("Channel - " + tmp.dwChannelID + ": Status -" + ((tmp.enStatus == 1) ? "Online" : "Offline") + "  Ptz -" + ((tmp.bPtzSupported != 0) ? "Yes" : "No"));
-            }
-            NameChannelMap.put(szDevNameList.get(szDevNameList.size() - 1), chlList);
-        }
+//        if (0 == NetDEVSDK.dwDeviceType)
+//        {
+//            List<NETDEV_VIDEO_CHL_DETAIL_INFO_S> chlList = new ArrayList<NETDEV_VIDEO_CHL_DETAIL_INFO_S>();
+//            chlList = NetDEVSDK.NETDEV_QueryVideoChlDetailList(nameLpUserIDMap.get(strCloudDevName), 64);
+//            m_oChnAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, new ArrayList<String>());
+//            m_oChannelList.setAdapter(m_oChnAdapter);
+//            for (int i = 0; i < (chlList == null ? 0 : chlList.size()); i++) {
+//                NETDEV_VIDEO_CHL_DETAIL_INFO_S tmp = chlList.get(i);
+//                System.out.println(i + " Status -" + ((tmp.enStatus == 1) ? "Online" : "Offline"));
+//                m_oChnAdapter.add("Channel - " + tmp.dwChannelID + ": Status -" + ((tmp.enStatus == 1) ? "Online" : "Offline") + "  Ptz -" + ((tmp.bPtzSupported != 0) ? "Yes" : "No"));
+//            }
+//        }
 
     }
 
